@@ -1,0 +1,28 @@
+{
+  "name": "rhda-mcp-server",
+  "version": "1.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "rhda-mcp-server": "./run.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "@trustify-da/trustify-da-javascript-client": "^0.2.4-ea.13",
+    "zod": "^4.1.13"
+  }
+}
