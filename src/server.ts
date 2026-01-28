@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createAnalyzeStackVulnerabilitiesTool, analyzeStackVulnerabilitiesSchema } from "./tools/analyzeStackVulnerabilities.js";
-import { createDescribeVulnerabilityTool, describeVulnerabilitySchema } from "./tools/describeVulnerability.js";
-import { generateRemediationPlanTool, remediationPlanSchema } from "./tools/remediationPlan.js";
+import { createDescribeVulnerabilityTool as createExplainVulnerabilityTool, describeVulnerabilitySchema as explainVulnerabilitySchema } from "./tools/describeVulnerability.js";
+import { generateRemediationPlanTool as createGenerateRemediationPlanTool, remediationPlanSchema as generateRemediationPlanSchema } from "./tools/remediationPlan.js";
 import { createIgnoreDependencyTool, ignoreDependencySchema } from "./tools/ignoreDependency.js";
 import type { Config } from "./config/cli.js";
+import { createRetrieveSupportingDocumentsTool, retrieveSupportingDocumentsSchema } from "./tools/retrieveSupportingDocuments.js";
 
 export function createServer(config: Config): McpServer {
   const server = new McpServer(
@@ -31,9 +32,9 @@ export function createServer(config: Config): McpServer {
     {
       description:
         "Explain and describe a specific CVE vulnerability. Use this when the user asks: 'What is CVE-XXXX?', 'Explain CVE-XXXX', 'Tell me about this CVE', 'What does this vulnerability do?', 'Details about CVE-XXXX', or similar queries asking to understand or explain a specific CVE. Requires cve (CVE ID) and packageRef (obtained from analyze_dependency_vulnerabilities results). Provides detailed security assessment including exploitability, impact, limitations, confidence, and evidence-backed claims. Do NOT use manifestPath here - first call analyze_dependency_vulnerabilities, then use the cve and packageRef from those results.",
-      inputSchema: describeVulnerabilitySchema,
+      inputSchema: explainVulnerabilitySchema,
     },
-    createDescribeVulnerabilityTool(config.intelServerUrl)
+    createExplainVulnerabilityTool(config.intelServerUrl)
   );
   
   server.registerTool(
@@ -41,10 +42,20 @@ export function createServer(config: Config): McpServer {
     {
       description:
         "Generate a fix, solution, or remediation plan for a specific CVE vulnerability. Use this when the user asks: 'How do I fix CVE-XXXX?', 'What's the solution for this CVE?', 'How to remediate this vulnerability?', 'Fix this vulnerability', 'Remediation plan for CVE-XXXX', 'How to solve this CVE?', or similar queries asking for solutions or fixes. Requires cve (CVE ID) and packageRef (obtained from analyze_dependency_vulnerabilities results). Provides actionable remediation options and step-by-step instructions for fixing, mitigating, or safely ignoring the issue. Do NOT use manifestPath here - first call analyze_dependency_vulnerabilities, then use the cve and packageRef from those results. IMPORTANT: This tool returns INFORMATION ONLY - you MUST present the remediation plan to the user and MUST NOT take any actions automatically. Do NOT modify code, update dependencies, or make any changes without explicit user approval. The remediation plan is for the user to review and implement themselves.",
-      inputSchema: remediationPlanSchema,
+      inputSchema: generateRemediationPlanSchema,
     },
-    generateRemediationPlanTool(config.intelServerUrl)
+    createGenerateRemediationPlanTool(config.intelServerUrl)
   );
+
+  server.registerTool(
+    "retrieve_supporting_documents",
+    {
+      description:
+      "Retrieves documents that support a claim. Use this when the user asks: 'Why is this claim true?', 'Prove this claim', 'Explain this claim', 'Why is this claim valid?', 'Justify this claim', or similar queries asking to justify a specific claim. Requires claim or fact (the claim or fact to justify) and document (the document that supports the claim). Provides the document that supports the claim. Use after explain_vulnerability or generate_remediation_plan to retrieve the evidence items that support the claim the user asked about.",
+      inputSchema: retrieveSupportingDocumentsSchema,
+    },
+    createRetrieveSupportingDocumentsTool(config.intelServerUrl)
+  )
   
   server.registerTool(
     "suppress_dependency_vulnerability",
