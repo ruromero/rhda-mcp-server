@@ -1,0 +1,1378 @@
+{
+  "plan": {
+    "applicable": true,
+    "actions": [
+      {
+        "kind": "patch_upgrade",
+        "description": "PatchUpgrade (High confidence, vendor advisory): Upgrade to fixed version(s): 911c886bb170a6ee3db05fd3709221752213ec8a",
+        "language": "JavaScript",
+        "instructions": [
+          {
+            "domain": "dependency",
+            "action": "Upgrade node-tar to version 7.5.4",
+            "parameters": {
+              "version": "7.5.4",
+              "file_path": "package.json",
+              "package_name": "tar"
+            }
+          },
+          {
+            "domain": "build",
+            "action": "Run npm install to apply changes",
+            "parameters": {}
+          },
+          {
+            "domain": "code",
+            "action": "Run unit tests to ensure that functionality remains intact",
+            "parameters": {
+              "test_command": "npm test"
+            }
+          }
+        ],
+        "preconditions": [
+          "Create backup of package.json and package-lock.json",
+          "Verify that Node.js version supports tar version 7.5.4"
+        ],
+        "confirmation_risks": [
+          "This upgrade includes breaking API changes that may affect compatibility with legacy scripts using the old version",
+          "Some functionality may differ in behavior due to the fix applied in path-reservations, requiring code adjustments"
+        ],
+        "expected_outcomes": [
+          "Vulnerability CVE-2026-23950 is patched",
+          "All existing tests pass without issues"
+        ]
+      },
+      {
+        "kind": "alternative_library",
+        "description": "AlternativeLibrary (High confidence, Red Hat): No fix available or no fix planned by vendor",
+        "language": "JavaScript",
+        "instructions": [
+          {
+            "domain": "dependency",
+            "action": "Replace node-tar with an alternative library",
+            "parameters": {
+              "package_name": "alternative-library"
+            }
+          },
+          {
+            "domain": "code",
+            "action": "Update your code to use alternative library methods and functionality",
+            "parameters": {
+              "library_name": "alternative-library"
+            }
+          },
+          {
+            "domain": "code",
+            "action": "Run full test suite to ensure compatibility with the alternative library",
+            "parameters": {
+              "test_command": "npm test"
+            }
+          }
+        ],
+        "preconditions": [
+          "Create backup of current implementation using node-tar",
+          "Verify that alternative library supports required functionality and methods"
+        ],
+        "confirmation_risks": [
+          "This replaces node-tar with an alternative library, which may require changes in code integration",
+          "The alternative library may not support all features previously available in node-tar"
+        ],
+        "expected_outcomes": [
+          "CVE-2026-23950 is mitigated",
+          "Arbitrary file overwrite vulnerability is handled",
+          "All existing tests pass"
+        ]
+      }
+    ],
+    "options": [
+      {
+        "kind": "patch_upgrade",
+        "description": "PatchUpgrade (High confidence, vendor advisory): Upgrade to fixed version(s): 911c886bb170a6ee3db05fd3709221752213ec8a",
+        "migration_guide": null,
+        "certainty": "strong"
+      },
+      {
+        "kind": "code_change",
+        "description": "CodeChange (High confidence, GitHub advisory): Code changes or workarounds suggested in mitigation claims",
+        "migration_guide": null,
+        "certainty": "strong"
+      },
+      {
+        "kind": "alternative_library",
+        "description": "AlternativeLibrary (High confidence, Red Hat): No fix available or no fix planned by vendor",
+        "migration_guide": null,
+        "certainty": "strong"
+      }
+    ],
+    "safe_defaults": [
+      {
+        "kind": "code_change",
+        "description": "CodeChange (High confidence, GitHub advisory): Code changes or workarounds suggested in mitigation claims",
+        "language": "JavaScript",
+        "instructions": [
+          {
+            "domain": "dependency",
+            "action": "Update node-tar to version 7.5.4",
+            "parameters": {
+              "package_name": "node-tar",
+              "ecosystem": "npm",
+              "new_version": "7.5.4",
+              "old_version": "6.1.1"
+            }
+          },
+          {
+            "domain": "code",
+            "action": "Update path-reservations.js to use a normalization form based on the filesystem",
+            "parameters": {
+              "action": "Implement normalization to match the target filesystem's behavior",
+              "file_path": "node_modules/node-tar/lib/path-reservations.js",
+              "require": "unicodeNormalization"
+            }
+          },
+          {
+            "domain": "code",
+            "action": "Filter out all SymbolicLink entries when extracting tarball data",
+            "parameters": {
+              "action": "Modify the extraction logic to filter SymbolicLink entries",
+              "file_path": "your_extraction_logic.js"
+            }
+          }
+        ],
+        "preconditions": [
+          "Create a backup of package.json and package-lock.json",
+          "Ensure test environment is configured to catch any regression"
+        ],
+        "confirmation_risks": [
+          "This upgrade to node-tar from version 6.1.1 to 7.5.4 introduces breaking changes in the API",
+          "The workaround for using 'SymbolicLink' entries may require additional code adjustments"
+        ],
+        "expected_outcomes": [
+          "Vulnerability CVE-2026-23950 is patched",
+          "All existing tests pass without modification"
+        ]
+      }
+    ],
+    "confirmation_risks": [
+      "Version 6.1.1 is within affected range and not yet fixed"
+    ]
+  },
+  "intel": {
+    "intel": {
+      "cve_identity": {
+        "cve": "CVE-2026-23950",
+        "description": "node-tar has Race Condition in Path Reservations via Unicode Ligature Collisions on macOS APFS",
+        "aliases": [
+          "GHSA-r6q2-hw4h-h46w"
+        ],
+        "cvss_vectors": [
+          {
+            "cvss_type": "v3",
+            "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:H/A:L"
+          }
+        ],
+        "references": [
+          {
+            "url": "https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/23xxx/CVE-2026-23950.json",
+            "source_type": "advisory"
+          },
+          {
+            "url": "https://github.com/isaacs/node-tar/commit/3b1abfae650056edfabcbe0a0df5954d390521e6",
+            "source_type": "fix"
+          },
+          {
+            "url": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+            "source_type": "advisory"
+          },
+          {
+            "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+            "source_type": "advisory"
+          },
+          {
+            "url": "https://access.redhat.com/security/cve/CVE-2026-23950",
+            "source_type": "advisory"
+          },
+          {
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2431036",
+            "source_type": "web"
+          },
+          {
+            "url": "https://www.cve.org/CVERecord?id=CVE-2026-23950",
+            "source_type": "web"
+          }
+        ],
+        "published": "2026-01-20T00:40:48.510Z",
+        "last_modified": "2026-02-04T02:37:08.461889Z"
+      },
+      "package_metadata": {
+        "source_repo": "git+https://github.com/npm/node-tar.git",
+        "homepage": "https://github.com/npm/node-tar#readme",
+        "issue_tracker": "https://github.com/npm/node-tar/issues",
+        "licenses": [
+          "ISC"
+        ]
+      },
+      "package_identity": {
+        "purl": "pkg:npm/tar@6.1.1",
+        "dependency_graph": [],
+        "scope": "runtime"
+      },
+      "affected_versions": [
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.0",
+          "last_affected": "0.1.0",
+          "raw": "0.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.10",
+          "last_affected": "0.1.10",
+          "raw": "0.1.10"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.11",
+          "last_affected": "0.1.11",
+          "raw": "0.1.11"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.12",
+          "last_affected": "0.1.12",
+          "raw": "0.1.12"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.13",
+          "last_affected": "0.1.13",
+          "raw": "0.1.13"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.2",
+          "last_affected": "0.1.2",
+          "raw": "0.1.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.3",
+          "last_affected": "0.1.3",
+          "raw": "0.1.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.5",
+          "last_affected": "0.1.5",
+          "raw": "0.1.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.6",
+          "last_affected": "0.1.6",
+          "raw": "0.1.6"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.7",
+          "last_affected": "0.1.7",
+          "raw": "0.1.7"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.8",
+          "last_affected": "0.1.8",
+          "raw": "0.1.8"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "0.1.9",
+          "last_affected": "0.1.9",
+          "raw": "0.1.9"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.14",
+          "last_affected": "v0.1.14",
+          "raw": "v0.1.14"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.15",
+          "last_affected": "v0.1.15",
+          "raw": "v0.1.15"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.16",
+          "last_affected": "v0.1.16",
+          "raw": "v0.1.16"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.17",
+          "last_affected": "v0.1.17",
+          "raw": "v0.1.17"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.18",
+          "last_affected": "v0.1.18",
+          "raw": "v0.1.18"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.19",
+          "last_affected": "v0.1.19",
+          "raw": "v0.1.19"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v0.1.20",
+          "last_affected": "v0.1.20",
+          "raw": "v0.1.20"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v1.0.0",
+          "last_affected": "v1.0.0",
+          "raw": "v1.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v1.0.1",
+          "last_affected": "v1.0.1",
+          "raw": "v1.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v1.0.2",
+          "last_affected": "v1.0.2",
+          "raw": "v1.0.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v1.0.3",
+          "last_affected": "v1.0.3",
+          "raw": "v1.0.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v2.0.0",
+          "last_affected": "v2.0.0",
+          "raw": "v2.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v2.0.1",
+          "last_affected": "v2.0.1",
+          "raw": "v2.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v2.1.0",
+          "last_affected": "v2.1.0",
+          "raw": "v2.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v2.1.1",
+          "last_affected": "v2.1.1",
+          "raw": "v2.1.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v2.2.1",
+          "last_affected": "v2.2.1",
+          "raw": "v2.2.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.0.0",
+          "last_affected": "v3.0.0",
+          "raw": "v3.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.0.1",
+          "last_affected": "v3.0.1",
+          "raw": "v3.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.0",
+          "last_affected": "v3.1.0",
+          "raw": "v3.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.1",
+          "last_affected": "v3.1.1",
+          "raw": "v3.1.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.10",
+          "last_affected": "v3.1.10",
+          "raw": "v3.1.10"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.11",
+          "last_affected": "v3.1.11",
+          "raw": "v3.1.11"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.12",
+          "last_affected": "v3.1.12",
+          "raw": "v3.1.12"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.13",
+          "last_affected": "v3.1.13",
+          "raw": "v3.1.13"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.14",
+          "last_affected": "v3.1.14",
+          "raw": "v3.1.14"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.15",
+          "last_affected": "v3.1.15",
+          "raw": "v3.1.15"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.2",
+          "last_affected": "v3.1.2",
+          "raw": "v3.1.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.3",
+          "last_affected": "v3.1.3",
+          "raw": "v3.1.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.4",
+          "last_affected": "v3.1.4",
+          "raw": "v3.1.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.5",
+          "last_affected": "v3.1.5",
+          "raw": "v3.1.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.6",
+          "last_affected": "v3.1.6",
+          "raw": "v3.1.6"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.7",
+          "last_affected": "v3.1.7",
+          "raw": "v3.1.7"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.8",
+          "last_affected": "v3.1.8",
+          "raw": "v3.1.8"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.1.9",
+          "last_affected": "v3.1.9",
+          "raw": "v3.1.9"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v3.2.0",
+          "last_affected": "v3.2.0",
+          "raw": "v3.2.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.0.0",
+          "last_affected": "v4.0.0",
+          "raw": "v4.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.0.1",
+          "last_affected": "v4.0.1",
+          "raw": "v4.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.0.2",
+          "last_affected": "v4.0.2",
+          "raw": "v4.0.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.1.0",
+          "last_affected": "v4.1.0",
+          "raw": "v4.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.1.1",
+          "last_affected": "v4.1.1",
+          "raw": "v4.1.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.1.2",
+          "last_affected": "v4.1.2",
+          "raw": "v4.1.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.2.0",
+          "last_affected": "v4.2.0",
+          "raw": "v4.2.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.3.0",
+          "last_affected": "v4.3.0",
+          "raw": "v4.3.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.3.1",
+          "last_affected": "v4.3.1",
+          "raw": "v4.3.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.3.2",
+          "last_affected": "v4.3.2",
+          "raw": "v4.3.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.3.3",
+          "last_affected": "v4.3.3",
+          "raw": "v4.3.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.0",
+          "last_affected": "v4.4.0",
+          "raw": "v4.4.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.1",
+          "last_affected": "v4.4.1",
+          "raw": "v4.4.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.10",
+          "last_affected": "v4.4.10",
+          "raw": "v4.4.10"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.11",
+          "last_affected": "v4.4.11",
+          "raw": "v4.4.11"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.12",
+          "last_affected": "v4.4.12",
+          "raw": "v4.4.12"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.13",
+          "last_affected": "v4.4.13",
+          "raw": "v4.4.13"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.2",
+          "last_affected": "v4.4.2",
+          "raw": "v4.4.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.3",
+          "last_affected": "v4.4.3",
+          "raw": "v4.4.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.4",
+          "last_affected": "v4.4.4",
+          "raw": "v4.4.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.5",
+          "last_affected": "v4.4.5",
+          "raw": "v4.4.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.6",
+          "last_affected": "v4.4.6",
+          "raw": "v4.4.6"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.7",
+          "last_affected": "v4.4.7",
+          "raw": "v4.4.7"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.8",
+          "last_affected": "v4.4.8",
+          "raw": "v4.4.8"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v4.4.9",
+          "last_affected": "v4.4.9",
+          "raw": "v4.4.9"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.0",
+          "last_affected": "v5.0.0",
+          "raw": "v5.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.1",
+          "last_affected": "v5.0.1",
+          "raw": "v5.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.2",
+          "last_affected": "v5.0.2",
+          "raw": "v5.0.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.3",
+          "last_affected": "v5.0.3",
+          "raw": "v5.0.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.4",
+          "last_affected": "v5.0.4",
+          "raw": "v5.0.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v5.0.5",
+          "last_affected": "v5.0.5",
+          "raw": "v5.0.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.0",
+          "last_affected": "v6.0.0",
+          "raw": "v6.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.1",
+          "last_affected": "v6.0.1",
+          "raw": "v6.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.2",
+          "last_affected": "v6.0.2",
+          "raw": "v6.0.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.3",
+          "last_affected": "v6.0.3",
+          "raw": "v6.0.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.4",
+          "last_affected": "v6.0.4",
+          "raw": "v6.0.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.0.5",
+          "last_affected": "v6.0.5",
+          "raw": "v6.0.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.0",
+          "last_affected": "v6.1.0",
+          "raw": "v6.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.1",
+          "last_affected": "v6.1.1",
+          "raw": "v6.1.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.10",
+          "last_affected": "v6.1.10",
+          "raw": "v6.1.10"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.11",
+          "last_affected": "v6.1.11",
+          "raw": "v6.1.11"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.12",
+          "last_affected": "v6.1.12",
+          "raw": "v6.1.12"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.13",
+          "last_affected": "v6.1.13",
+          "raw": "v6.1.13"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.14",
+          "last_affected": "v6.1.14",
+          "raw": "v6.1.14"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.15",
+          "last_affected": "v6.1.15",
+          "raw": "v6.1.15"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.2",
+          "last_affected": "v6.1.2",
+          "raw": "v6.1.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.3",
+          "last_affected": "v6.1.3",
+          "raw": "v6.1.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.4",
+          "last_affected": "v6.1.4",
+          "raw": "v6.1.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.5",
+          "last_affected": "v6.1.5",
+          "raw": "v6.1.5"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.6",
+          "last_affected": "v6.1.6",
+          "raw": "v6.1.6"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.7",
+          "last_affected": "v6.1.7",
+          "raw": "v6.1.7"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.8",
+          "last_affected": "v6.1.8",
+          "raw": "v6.1.8"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.1.9",
+          "last_affected": "v6.1.9",
+          "raw": "v6.1.9"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.2.0",
+          "last_affected": "v6.2.0",
+          "raw": "v6.2.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v6.2.1",
+          "last_affected": "v6.2.1",
+          "raw": "v6.2.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.0.0",
+          "last_affected": "v7.0.0",
+          "raw": "v7.0.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.0.1",
+          "last_affected": "v7.0.1",
+          "raw": "v7.0.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.1.0",
+          "last_affected": "v7.1.0",
+          "raw": "v7.1.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.2.0",
+          "last_affected": "v7.2.0",
+          "raw": "v7.2.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.3.0",
+          "last_affected": "v7.3.0",
+          "raw": "v7.3.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.4.0",
+          "last_affected": "v7.4.0",
+          "raw": "v7.4.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.4.1",
+          "last_affected": "v7.4.1",
+          "raw": "v7.4.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.4.2",
+          "last_affected": "v7.4.2",
+          "raw": "v7.4.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.4.3",
+          "last_affected": "v7.4.3",
+          "raw": "v7.4.3"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.4.4",
+          "last_affected": "v7.4.4",
+          "raw": "v7.4.4"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.5.0",
+          "last_affected": "v7.5.0",
+          "raw": "v7.5.0"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.5.1",
+          "last_affected": "v7.5.1",
+          "raw": "v7.5.1"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.5.2",
+          "last_affected": "v7.5.2",
+          "raw": "v7.5.2"
+        },
+        {
+          "range_type": "ecosystem",
+          "introduced": "v7.5.3",
+          "last_affected": "v7.5.3",
+          "raw": "v7.5.3"
+        },
+        {
+          "range_type": "git",
+          "introduced": "0",
+          "last_affected": null,
+          "raw": null
+        }
+      ],
+      "fixed_versions": [
+        {
+          "range_type": "git",
+          "fixed": "911c886bb170a6ee3db05fd3709221752213ec8a",
+          "raw": null
+        }
+      ],
+      "vendor_remediations": [
+        {
+          "vendor": "Red Hat",
+          "category": "vendor_fix",
+          "other_category": null,
+          "details": "Red Hat Trusted Artifact Signer simplifies cryptographic signing and verifying of software artifacts such as container images, binaries and source code changes. It is a self-managed on-premise deployment of the Sigstore project available at https://sigstore.dev\n\nPlatform Engineers, Software Developers and Security Professionals may use RHTAS to ensure the integrity, transparency and assurance of their organization's software supply chain.\n\nFor details on using the operator, refer to the product documentation at https://access.redhat.com/documentation/en-us/red_hat_trusted_artifact_signer/1.3\n\nYou can find the release notes for this version of Red Hat Trusted Artifact Signer at https://access.redhat.com/documentation/en-us/red_hat_trusted_artifact_signer/1.3/html-single/release_notes/index",
+          "url": "https://access.redhat.com/errata/RHSA-2026:2144",
+          "product_ids": [
+            "Red Hat Trusted Artifact Signer 1.3:registry.redhat.io/rhtas/rekor-search-ui-rhel9@sha256:3971738912069448174202486b61ed384153ca18af3e8430a55795a6e65eb58d_amd64"
+          ]
+        },
+        {
+          "vendor": "Red Hat",
+          "category": "workaround",
+          "other_category": null,
+          "details": "Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base, or stability.",
+          "url": null,
+          "product_ids": [
+            "Red Hat Trusted Artifact Signer 1.3:registry.redhat.io/rhtas/rekor-search-ui-rhel9@sha256:3971738912069448174202486b61ed384153ca18af3e8430a55795a6e65eb58d_amd64",
+            "confidential_compute_attestation:openshift-sandboxed-containers/osc-pccs",
+            "logging_subsystem_for_red_hat_openshift:openshift-logging/kibana6-rhel8",
+            "migration_toolkit_for_containers:rhmtc/openshift-migration-ui-rhel8",
+            "network_observability_operator:network-observability/network-observability-console-plugin-rhel9",
+            "openshift_lightspeed:openshift-lightspeed/lightspeed-to-dataverse-exporter-rhel9",
+            "openshift_pipelines:openshift-pipelines/pipelines-console-plugin-rhel8",
+            "openshift_serverless:openshift-serverless-1/kn-eventing-integrations-transform-jsonata-rhel9",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel7",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel8",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel9",
+            "red_hat_3scale_api_management_platform_2:3scale-amp20/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp21/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp22/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp24/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp25/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp26/system",
+            "red_hat_connectivity_link_1:rhcl-1/rhcl-console-plugin-rhel9",
+            "red_hat_developer_hub:rhdh/rhdh-hub-rhel9",
+            "red_hat_enterprise_linux_10:sgx-common",
+            "red_hat_enterprise_linux_10:sgx-libs",
+            "red_hat_enterprise_linux_10:sgx-mpa",
+            "red_hat_enterprise_linux_10:sgx-pckid-tool",
+            "red_hat_enterprise_linux_10:tdx-qgs",
+            "red_hat_enterprise_linux_6:tar.src",
+            "red_hat_enterprise_linux_9:sgx-common",
+            "red_hat_enterprise_linux_9:sgx-libs",
+            "red_hat_enterprise_linux_9:sgx-mpa",
+            "red_hat_enterprise_linux_9:sgx-pckid-tool",
+            "red_hat_enterprise_linux_9:tdx-qgs",
+            "red_hat_enterprise_linux_ai_(rhel_ai)_3:rhelai3/bootc-cuda-rhel9",
+            "red_hat_fuse_7:io.hawt-project",
+            "red_hat_openshift_ai_(rhoai):rhoai/odh-dashboard-rhel8",
+            "red_hat_openshift_ai_(rhoai):rhoai/odh-dashboard-rhel9",
+            "red_hat_openshift_container_platform_4:openshift4/ose-console",
+            "red_hat_openshift_data_foundation_4:odf4/mcg-core-rhel9",
+            "red_hat_openshift_data_foundation_4:odf4/odf-console-rhel9",
+            "red_hat_openshift_dev_spaces:devspaces/udi-rhel9",
+            "red_hat_openshift_gitops:openshift-gitops-1/argocd-rhel8",
+            "red_hat_quay_3:quay/quay-rhel9",
+            "red_hat_satellite_6:satellite/iop-remediations-rhel9"
+          ]
+        },
+        {
+          "vendor": "Red Hat",
+          "category": "no_fix_planned",
+          "other_category": null,
+          "details": "Out of support scope",
+          "url": null,
+          "product_ids": [
+            "red_hat_enterprise_linux_6:tar.src"
+          ]
+        },
+        {
+          "vendor": "Red Hat",
+          "category": "no_fix_planned",
+          "other_category": null,
+          "details": "Will not fix",
+          "url": null,
+          "product_ids": [
+            "logging_subsystem_for_red_hat_openshift:openshift-logging/kibana6-rhel8",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel7",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel8",
+            "red_hat_3scale_api_management_platform_2:3scale-amp2/system-rhel9",
+            "red_hat_3scale_api_management_platform_2:3scale-amp20/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp21/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp22/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp24/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp25/system",
+            "red_hat_3scale_api_management_platform_2:3scale-amp26/system",
+            "red_hat_fuse_7:io.hawt-project"
+          ]
+        },
+        {
+          "vendor": "Red Hat",
+          "category": "none_available",
+          "other_category": null,
+          "details": "Affected",
+          "url": null,
+          "product_ids": [
+            "confidential_compute_attestation:openshift-sandboxed-containers/osc-pccs",
+            "migration_toolkit_for_containers:rhmtc/openshift-migration-ui-rhel8",
+            "network_observability_operator:network-observability/network-observability-console-plugin-rhel9",
+            "openshift_lightspeed:openshift-lightspeed/lightspeed-to-dataverse-exporter-rhel9",
+            "openshift_pipelines:openshift-pipelines/pipelines-console-plugin-rhel8",
+            "openshift_serverless:openshift-serverless-1/kn-eventing-integrations-transform-jsonata-rhel9",
+            "red_hat_connectivity_link_1:rhcl-1/rhcl-console-plugin-rhel9",
+            "red_hat_developer_hub:rhdh/rhdh-hub-rhel9",
+            "red_hat_enterprise_linux_10:sgx-common",
+            "red_hat_enterprise_linux_10:sgx-libs",
+            "red_hat_enterprise_linux_10:sgx-mpa",
+            "red_hat_enterprise_linux_10:sgx-pckid-tool",
+            "red_hat_enterprise_linux_10:tdx-qgs",
+            "red_hat_enterprise_linux_9:sgx-common",
+            "red_hat_enterprise_linux_9:sgx-libs",
+            "red_hat_enterprise_linux_9:sgx-mpa",
+            "red_hat_enterprise_linux_9:sgx-pckid-tool",
+            "red_hat_enterprise_linux_9:tdx-qgs",
+            "red_hat_enterprise_linux_ai_(rhel_ai)_3:rhelai3/bootc-cuda-rhel9",
+            "red_hat_openshift_ai_(rhoai):rhoai/odh-dashboard-rhel8",
+            "red_hat_openshift_ai_(rhoai):rhoai/odh-dashboard-rhel9",
+            "red_hat_openshift_container_platform_4:openshift4/ose-console",
+            "red_hat_openshift_data_foundation_4:odf4/mcg-core-rhel9",
+            "red_hat_openshift_data_foundation_4:odf4/odf-console-rhel9",
+            "red_hat_openshift_dev_spaces:devspaces/udi-rhel9",
+            "red_hat_openshift_gitops:openshift-gitops-1/argocd-rhel8",
+            "red_hat_quay_3:quay/quay-rhel9",
+            "red_hat_satellite_6:satellite/iop-remediations-rhel9"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "reason": "mitigation",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+                "id": "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9"
+              },
+              "trust_level": "high",
+              "excerpt": "The patch in version 7.5.4 updates `path-reservations.js` to use a normalization form that matches the target filesystem's behavior.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://www.cve.org/CVERecord?id=CVE-2026-23950",
+                "id": "67419554484868040d8fb1dbe209cb3f124a2b64b68c167273e40544d28cf900"
+              },
+              "trust_level": "high",
+              "excerpt": "The patch in version 7.5.4 updates path-reservations.js to use a normalization form that matches the target filesystem's behavior.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+                "id": "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd"
+              },
+              "trust_level": "medium",
+              "excerpt": "Update `path-reservations.js` to use a normalization form that matches the target filesystem's behavior (e.g., `NFKD`), followed by first `toLocaleLowerCase('en')` and then `toLocaleUpperCase('en').",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "Upgrading to version 7.5.4 mitigates the race condition vulnerability by improving Unicode normalization handling."
+        },
+        {
+          "reason": "mitigation",
+          "certainty": "conditional",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+                "id": "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9"
+              },
+              "trust_level": "high",
+              "excerpt": "As a workaround, users who cannot upgrade promptly, and who are programmatically using `node-tar` to extract arbitrary tarball data should filter out all `SymbolicLink` entries (as npm does) to defend against arbitrary file writes via this file system entry name collision issue.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+                "id": "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd"
+              },
+              "trust_level": "medium",
+              "excerpt": "Users who cannot upgrade promptly, and who are programmatically using `node-tar` to extract arbitrary tarball data should filter out all `SymbolicLink` entries (as npm does) to defend against arbitrary file writes via this file system entry name collision issue.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "Filtering out symbolic links offers a temporary measure to mitigate the risk of attacks while users transition to the patched version."
+        },
+        {
+          "reason": "identification",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+                "id": "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9"
+              },
+              "trust_level": "high",
+              "excerpt": "This is due to an incomplete handling of Unicode path collisions in the `path-reservations` system.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://access.redhat.com/security/cve/CVE-2026-23950",
+                "id": "5837256d4c0337f91bbde43b4c9957b4380863133f755b32e33bb4662f01c66b"
+              },
+              "trust_level": "high",
+              "excerpt": "This race condition vulnerability occurs due to incomplete handling of Unicode path collisions within the `path-reservations` system on case-insensitive filesystems, such as macOS APFS.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+                "id": "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd"
+              },
+              "trust_level": "medium",
+              "excerpt": "A race condition vulnerability exists in `node-tar` (v7.5.3) this is to an incomplete handling of Unicode path collisions in the `path-reservations` system.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The document identifies a race condition vulnerability in node-tar affecting version 7.5.3 due to Unicode path collisions."
+        },
+        {
+          "reason": "identification",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+                "id": "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9"
+              },
+              "trust_level": "high",
+              "excerpt": "node-tar,a Tar for Node.js, has a race condition vulnerability in versions up to and including 7.5.3.",
+              "source_roles": [
+                "advisory"
+              ]
+            },
+            {
+              "reference_id": {
+                "source": "https://www.cve.org/CVERecord?id=CVE-2026-23950",
+                "id": "67419554484868040d8fb1dbe209cb3f124a2b64b68c167273e40544d28cf900"
+              },
+              "trust_level": "high",
+              "excerpt": "node-tar,a Tar for Node.js, has a race condition vulnerability in versions up to and including 7.5.3.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "node-tar has a race condition vulnerability affecting versions up to 7.5.3 due to handling of Unicode path collisions."
+        },
+        {
+          "reason": "impact",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+                "id": "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd"
+              },
+              "trust_level": "medium",
+              "excerpt": "This is a Race Condition which enables Arbitrary File Overwrite.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The impact of the vulnerability is significant, allowing arbitrary file overwrite due to the identified race condition."
+        },
+        {
+          "reason": "impact",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-23950",
+                "id": "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9"
+              },
+              "trust_level": "high",
+              "excerpt": "This bypasses the library's internal concurrency safeguards and permits Symlink Poisoning attacks via race conditions.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The flaw allows attackers to exploit the race condition to perform Symlink Poisoning attacks."
+        },
+        {
+          "reason": "impact",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://access.redhat.com/security/cve/CVE-2026-23950",
+                "id": "5837256d4c0337f91bbde43b4c9957b4380863133f755b32e33bb4662f01c66b"
+              },
+              "trust_level": "high",
+              "excerpt": "Successful exploitation can lead to arbitrary file overwrite.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "Arbitrary file overwrite is a direct consequence of the successful exploitation of this vulnerability."
+        },
+        {
+          "reason": "impact",
+          "certainty": "conditional",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://access.redhat.com/security/cve/CVE-2026-23950",
+                "id": "5837256d4c0337f91bbde43b4c9957b4380863133f755b32e33bb4662f01c66b"
+              },
+              "trust_level": "high",
+              "excerpt": "Red Hat Enterprise Linux and other Red Hat products typically utilize case-sensitive filesystems, which may limit the direct impact of this flaw in default configurations.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The impact of the vulnerability is limited on systems using case-sensitive filesystems, such as the default configurations of Red Hat products."
+        },
+        {
+          "reason": "impact",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://www.cve.org/CVERecord?id=CVE-2026-23950",
+                "id": "67419554484868040d8fb1dbe209cb3f124a2b64b68c167273e40544d28cf900"
+              },
+              "trust_level": "high",
+              "excerpt": "This enables an attacker to circumvent internal parallelization locks (PathReservations) using conflicting filenames within a malicious tar archive.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "An attacker can exploit this vulnerability to use conflicting filenames in a tar archive, leading to arbitrary file overwrite."
+        },
+        {
+          "reason": "exploitability",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://github.com/isaacs/node-tar/security/advisories/GHSA-r6q2-hw4h-h46w",
+                "id": "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd"
+              },
+              "trust_level": "medium",
+              "excerpt": "This enables an attacker to circumvent internal parallelization locks (`PathReservations`) using conflicting filenames within a malicious tar archive.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The race condition permits attackers to bypass path reservation locks, leading to potential arbitrary file overwrite."
+        },
+        {
+          "reason": "exploitability",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://access.redhat.com/security/cve/CVE-2026-23950",
+                "id": "5837256d4c0337f91bbde43b4c9957b4380863133f755b32e33bb4662f01c66b"
+              },
+              "trust_level": "high",
+              "excerpt": "A remote attacker can exploit this by providing a specially crafted tar archive containing filenames that cause these collisions, bypassing internal concurrency safeguards.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The vulnerability can be exploited by a remote attacker using specially crafted tar archives to exploit Unicode path collisions."
+        },
+        {
+          "reason": "exploitability",
+          "certainty": "strong",
+          "evidence": [
+            {
+              "reference_id": {
+                "source": "https://www.cve.org/CVERecord?id=CVE-2026-23950",
+                "id": "67419554484868040d8fb1dbe209cb3f124a2b64b68c167273e40544d28cf900"
+              },
+              "trust_level": "high",
+              "excerpt": "this bypasses the library's internal concurrency safeguards and permits Symlink Poisoning attacks via race conditions.",
+              "source_roles": [
+                "advisory"
+              ]
+            }
+          ],
+          "rationale": "The vulnerability allows Symlink Poisoning attacks by bypassing concurrency safeguards through race conditions."
+        }
+      ],
+      "reference_ids": [
+        "32d8933602943c3ae699e767b8bb022a02971f53b8ff60805085994b17c597b2",
+        "c4992d070dd7155c83f229b22aef5d5457130ec3e401e513b7d66b211836cccd",
+        "353f1b6cbd1ea6d447929d3e74d26ecf7491bf936dc3775006479d834595a8a9",
+        "5837256d4c0337f91bbde43b4c9957b4380863133f755b32e33bb4662f01c66b",
+        "67419554484868040d8fb1dbe209cb3f124a2b64b68c167273e40544d28cf900"
+      ]
+    },
+    "exploitability": {
+      "status": "exploitable",
+      "certainty": "strong",
+      "conditions": [],
+      "notes": "Exploitation through specially crafted tar archives leading to file overwrites and symlink poisoning is confirmed."
+    },
+    "impact": {
+      "severity": "high",
+      "confidentiality": "low",
+      "integrity": "high",
+      "availability": "low",
+      "notes": "Arbitrary file overwrite and potential symlink poisoning due to race conditions indicate significant impacts on file safety."
+    },
+    "confidence": {
+      "level": "high",
+      "score": 35.5,
+      "reason": "The confidence level is justified due to a high confidence score of 35.5, with 10 out of 12 claims categorized as strong and coming from 10 high trust sources. There is a single limitation that does not materially affect confidence, and the exploitability status is clearly supported."
+    },
+    "limitations": [
+      {
+        "reason": "environment_specific",
+        "description": "Impact may vary on case-sensitive filesystems, potentially reducing actual risk in such environments."
+      }
+    ],
+    "generated_at": "2026-02-11T14:30:36.221513Z",
+    "retrieved_at": "2026-02-11T14:30:12.129370Z"
+  }
+}

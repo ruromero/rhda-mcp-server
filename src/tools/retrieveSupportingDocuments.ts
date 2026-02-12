@@ -6,10 +6,6 @@ export const retrieveSupportingDocumentsSchema = z.array(z.object({
   source: z.string().describe("Source of the evidence item."),
 })).describe("Evidence items that support a claim or fact.");
 
-interface Evidence {
-  items: EvidenceItem[];
-}
-
 interface EvidenceItem {
   id: string;
   source: string;

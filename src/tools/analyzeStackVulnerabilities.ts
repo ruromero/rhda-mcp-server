@@ -2,7 +2,7 @@ import { z } from "zod";
 import client from "@trustify-da/trustify-da-javascript-client";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { getTempDir } from "../utils/temp.js";
+import { getTempDir, RHDA_SCAN_LATEST_FILE } from "../utils/temp.js";
 import { formatStackAnalysisOutput } from "../utils/formatting.js";
 import type { ToolCallback } from "@modelcontextprotocol/sdk/server/mcp.js";
 
@@ -83,6 +83,25 @@ export function createAnalyzeStackVulnerabilitiesTool(
         });
         throw formatError;
       }
+
+      const latestPath = join(tempDirPath, RHDA_SCAN_LATEST_FILE);
+      await writeFile(
+        latestPath,
+        JSON.stringify(
+          {
+            manifestPath,
+            directOnly,
+            storedAt: new Date().toISOString(),
+            formatted: {
+              summary: formatted.summary,
+              affectedPackages: formatted.affectedPackages,
+            },
+            fullReport: report,
+          },
+          null,
+          2
+        )
+      );
 
       return {
         content: [
